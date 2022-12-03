@@ -5,27 +5,41 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 @Entity()
-export class Employees {
+export class Customer {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  accountNum: string;
+
+  @Column({ nullable: true, default: 0 })
+  accountBalance: number;
 
   @Column()
-  email: string;
+  name: string;
 
   @Column({ nullable: true })
-  phone: string;
+  email: string;
+
+  @Column()
+  userName: string;
 
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
+  address: string;
+
   @Column()
-  type: number;
+  bankId: number;
+
+  @Column({ nullable: true })
+  dob: Date;
 
   @Column({ nullable: true })
   createdAt: Date;
@@ -37,9 +51,6 @@ export class Employees {
   async checkBeforeCreate() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
-    const salt = await bcrypt.genSalt();
-    const hashPass = await bcrypt.hash(this.password, salt);
-    this.password = hashPass;
   }
 
   @BeforeUpdate()

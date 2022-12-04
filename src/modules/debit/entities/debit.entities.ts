@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Customer } from '../../customer/entities/customer.entities';
 
 @Entity()
 export class Debit {
@@ -40,6 +43,18 @@ export class Debit {
 
   @Column({ nullable: true })
   updatedAt: Date;
+
+  @ManyToOne(() => Customer, (customer) => customer.sendDebitAcc, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'sourceAccountId' })
+  sourceAccount: Customer;
+
+  @ManyToOne(() => Customer, (customer) => customer.receiveDebitAcc, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'targetAccountId' })
+  targetAccount: Customer;
 
   @BeforeInsert()
   async checkBeforeCreate() {

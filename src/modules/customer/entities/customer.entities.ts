@@ -4,7 +4,15 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
+import { Bank } from '../../bank/entities/bank.entities';
+import { Transaction } from '../../transaction/entities/transaction.entities';
+import { SuggestAccount } from '../../suggest-account/entities/suggest-account.entities';
+import { Debit } from '../../debit/entities/debit.entities';
 
 @Entity()
 export class Customer {
@@ -46,6 +54,28 @@ export class Customer {
 
   @Column({ nullable: true })
   updatedAt: Date;
+
+  @OneToOne(() => Bank, (bank) => bank.customer, { nullable: true })
+  @JoinColumn({ name: 'bankId' })
+  bank: Bank;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.sendAccNum)
+  sendAccountNum: Transaction[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.receiveBank)
+  receiveAccountNum: Transaction[];
+
+  @OneToMany(() => SuggestAccount, (sgAcc) => sgAcc.sendSgtAcc)
+  sendSuggestAcc: SuggestAccount[];
+
+  @OneToMany(() => SuggestAccount, (sgAcc) => sgAcc.receiveSgtAcc)
+  receiveSuggestAcc: SuggestAccount[];
+
+  @OneToMany(() => Debit, (debit) => debit.sourceAccount)
+  sendDebitAcc: Debit[];
+
+  @OneToMany(() => Debit, (debit) => debit.targetAccount)
+  receiveDebitAcc: Debit[];
 
   @BeforeInsert()
   async checkBeforeCreate() {

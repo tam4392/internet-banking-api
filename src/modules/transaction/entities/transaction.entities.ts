@@ -4,10 +4,14 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Customer } from '../../customer/entities/customer.entities';
+import { Bank } from '../../bank/entities/bank.entities';
 
 @Entity()
-export class Bank {
+export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -46,6 +50,26 @@ export class Bank {
 
   @Column({ nullable: true })
   updatedAt: Date;
+
+  @ManyToOne(() => Bank, (bank) => bank.sendBankIds, { nullable: true })
+  @JoinColumn({ name: 'sendBankId' })
+  sendBank: Bank;
+
+  @ManyToOne(() => Bank, (bank) => bank.receiveBankIds, { nullable: true })
+  @JoinColumn({ name: 'receiveBankId' })
+  receiveBank: Bank;
+
+  @ManyToOne(() => Customer, (customer) => customer.sendAccountNum, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'sendAccountNum' })
+  sendAccNum: Customer;
+
+  @ManyToOne(() => Customer, (customer) => customer.receiveAccountNum, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'receiveAccountNum' })
+  receiveAccNum: Customer;
 
   @BeforeInsert()
   async checkBeforeCreate() {

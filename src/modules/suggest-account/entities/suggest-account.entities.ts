@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Customer } from '../../customer/entities/customer.entities';
 
 @Entity()
 export class SuggestAccount {
@@ -28,6 +31,18 @@ export class SuggestAccount {
 
   @Column({ nullable: true })
   updatedAt: Date;
+
+  @ManyToOne(() => Customer, (customer) => customer.sendSuggestAcc, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'sendAccountNum' })
+  sendSgtAcc: Customer;
+
+  @ManyToOne(() => Customer, (customer) => customer.receiveSuggestAcc, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'receiveAccountNum' })
+  receiveSgtAcc: Customer;
 
   @BeforeInsert()
   async checkBeforeCreate() {

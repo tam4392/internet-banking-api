@@ -4,7 +4,7 @@ import {
   PaginatedResultDto,
   PaginationDto,
 } from 'src/modules/helper/pagination.dto';
-import { CreateDto } from '../dto/customer.dto';
+import { CreateDto, UpdateDto} from '../dto/customer.dto';
 import { Customer } from '../entities/customer.entities';
 import { CustomerService } from '../service/customer.service';
 
@@ -17,9 +17,24 @@ export class CustomerController {
     return this.customerService.findOne(Number(id));
   }
 
+  @Get()
+  list(): Promise<Customer[]> {
+    return this.customerService.findAll();
+  }
+
   @Post()
   create(@Body() createDto: CreateDto): Promise<Customer> {
     return this.customerService.create(createDto);
+  }
+
+  @Patch()
+  update(@Body() updateDto: UpdateDto): Promise<Customer> {
+    return this.customerService.update(updateDto);
+  }
+
+  @Delete()
+  remove(@Param('id') id: string): Promise<void> {
+    return this.customerService.remove(Number(id));
   }
 
   //   @Get()

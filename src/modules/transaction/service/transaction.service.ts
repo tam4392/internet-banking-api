@@ -1,4 +1,3 @@
-import { Bank } from './../../bank/entities/bank.entities';
 import {
   BadRequestException,
   Injectable,
@@ -10,7 +9,6 @@ import { Transaction } from '../entities/transaction.entities';
 import { PaginatedResultDto, PaginationDto } from '../../helper/pagination.dto';
 import { TransactionCreateDto } from '../dto/transaction.dto';
 import { ErrorResultDto } from '../../helper/error-result.dto';
-import { Customer } from '../../customer/entities/customer.entities';
 import { BankService } from '../../bank/service/bank.service';
 import { CustomerService } from '../../customer/service/customer.service';
 

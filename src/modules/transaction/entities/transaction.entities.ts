@@ -36,7 +36,7 @@ export class Transaction {
   @Column()
   receiveBankId: number;
 
-  @Column()
+  @Column({ nullable: true })
   status: number;
 
   @Column()

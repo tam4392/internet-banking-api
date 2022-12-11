@@ -4,7 +4,7 @@ import {
   PaginatedResultDto,
   PaginationDto,
 } from 'src/modules/helper/pagination.dto';
-import { CreateDto } from '../dto/employee.dto';
+import { CreateDto, UpdateDto } from '../dto/employee.dto';
 import { Employees } from '../entities/employees.entities';
 import { EmployeeService } from '../service/employee.service';
 
@@ -17,9 +17,24 @@ export class EmployeeController {
     return this.employeeService.findOne(Number(id));
   }
 
+  @Get()
+  list(): Promise<Employees[]> {
+    return this.employeeService.findAll();
+  }
+
   @Post()
   create(@Body() createDto: CreateDto): Promise<Employees> {
     return this.employeeService.create(createDto);
+  }
+
+  @Patch()
+  update(@Body() updateDto: UpdateDto): Promise<Employees> {
+    return this.employeeService.update(updateDto);
+  }
+
+  @Delete()
+  remove(@Param('id') id: string): Promise<void> {
+    return this.employeeService.remove(Number(id));
   }
 
   //   @Get()

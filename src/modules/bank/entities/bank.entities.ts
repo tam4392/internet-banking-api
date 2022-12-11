@@ -30,7 +30,7 @@ export class Bank {
     this.updatedAt = new Date();
   }
 
-  @OneToOne(() => Customer, (customer) => customer.bank)
+  @OneToMany(() => Customer, (customer) => customer.bank)
   customer: Customer[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.sendBank)

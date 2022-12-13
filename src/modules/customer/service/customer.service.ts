@@ -31,6 +31,7 @@ export class CustomerService {
     customer.dob = createDto.dob;
     customer.address = createDto.address;
     customer.bankId = createDto.bankId;
+    delete customer.id;
 
     try {
       const result = await this.customerRepository.save(customer);

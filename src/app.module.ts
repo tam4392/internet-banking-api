@@ -8,6 +8,7 @@ import { SuggestAccountModule } from './modules/suggest-account/suggest-account.
 import { BankModule } from './modules/bank/bank.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { DebitModule } from './modules/debit/debit.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DebitModule } from './modules/debit/debit.module';
     BankModule,
     TransactionModule,
     DebitModule,
+    MailModule
   ],
   controllers: [],
   providers: [],

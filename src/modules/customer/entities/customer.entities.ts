@@ -55,7 +55,7 @@ export class Customer {
   @Column({ nullable: true })
   updatedAt: Date;
 
-  @OneToOne(() => Bank, (bank) => bank.customer, { nullable: true })
+  @ManyToOne(() => Bank, (bank) => bank.customer, { nullable: true })
   @JoinColumn({ name: 'bankId' })
   bank: Bank;
 

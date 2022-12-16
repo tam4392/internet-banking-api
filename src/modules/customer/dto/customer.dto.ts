@@ -1,4 +1,5 @@
-import { IsDate, IsEmail, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString ,Min, MinLength} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsDate, IsDateString, IsEmail, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString ,Min, MinLength} from 'class-validator';
 
 export class CreateDto {
   @IsNotEmpty()
@@ -14,7 +15,7 @@ export class CreateDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEmail()
   email: string;
 
@@ -26,16 +27,17 @@ export class CreateDto {
   @IsString()
   password: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumberString()
-  @MinLength(11)
+  @MinLength(10)
   phone: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
+  @Type(() => Date)
   dob: Date;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   address: string;
 
@@ -80,8 +82,9 @@ export class UpdateDto {
   @MinLength(11)
   phone: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsDate()
+  @Type(() => Date)
   dob: Date;
 
   @IsOptional()

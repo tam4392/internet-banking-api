@@ -32,7 +32,7 @@ export class EmployeeController {
     return this.employeeService.update(updateDto);
   }
 
-  @Delete()
+  @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.employeeService.remove(Number(id));
   }

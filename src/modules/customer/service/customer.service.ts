@@ -63,8 +63,19 @@ export class CustomerService {
     }
   }
 
-  async remove(id: number): Promise<void> {
-    await this.customerRepository.delete(id);
+  async remove(id: number): Promise<object> {
+    const deleteResponse = await this.customerRepository.delete(id);
+    if (!deleteResponse.affected) {
+      return {
+        succeed: false,
+        msg:`Customer ${id} wasn't successfully deleted.`
+      };
+    }else{
+      return {
+        succeed: true,
+        msg:`Customer id:${id} was successfully deleted.`
+      }; 
+    }
   }
 
   async count(id: number): Promise<number> {

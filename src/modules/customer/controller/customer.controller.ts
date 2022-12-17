@@ -32,8 +32,8 @@ export class CustomerController {
     return this.customerService.update(updateDto);
   }
 
-  @Delete()
-  remove(@Param('id') id: string): Promise<void> {
+  @Delete(':id')
+  remove(@Param('id') id: string): Promise<object> {
     return this.customerService.remove(Number(id));
   }
 

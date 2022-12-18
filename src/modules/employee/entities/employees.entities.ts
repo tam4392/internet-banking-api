@@ -33,6 +33,9 @@ export class Employees {
   @Column({ nullable: true })
   updatedAt: Date;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @BeforeInsert()
   async checkBeforeCreate() {
     this.createdAt = new Date();

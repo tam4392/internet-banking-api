@@ -13,6 +13,7 @@ import { Bank } from '../../bank/entities/bank.entities';
 import { Transaction } from '../../transaction/entities/transaction.entities';
 import { SuggestAccount } from '../../suggest-account/entities/suggest-account.entities';
 import { Debit } from '../../debit/entities/debit.entities';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class Customer {
@@ -55,6 +56,9 @@ export class Customer {
   @Column({ nullable: true })
   updatedAt: Date;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @ManyToOne(() => Bank, (bank) => bank.customer, { nullable: true })
   @JoinColumn({ name: 'bankId' })
   bank: Bank;
@@ -81,10 +85,13 @@ export class Customer {
   async checkBeforeCreate() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    const salt = await bcrypt.genSalt();
+    const hashPass = await bcrypt.hash(this.password, salt);
+    this.password = hashPass;
   }
 
   @BeforeUpdate()
-  beforeUpdate() {
+  checkBeforeUpdate() {
     this.updatedAt = new Date();
   }
 }

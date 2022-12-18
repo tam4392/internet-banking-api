@@ -9,6 +9,7 @@ import { BankModule } from './modules/bank/bank.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { DebitModule } from './modules/debit/debit.module';
 import { MailModule } from './modules/mail/mail.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { MailModule } from './modules/mail/mail.module';
     BankModule,
     TransactionModule,
     DebitModule,
-    MailModule
+    MailModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],

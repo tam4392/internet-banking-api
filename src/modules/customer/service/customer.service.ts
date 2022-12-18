@@ -15,6 +15,10 @@ export class CustomerService {
     return this.customerRepository.findOne({ where: { id } });
   }
 
+  async findByUserName(userName: string): Promise<Customer> {
+    return this.customerRepository.findOne({ where: { userName } });
+  }
+
   async findAll(): Promise<Customer[]> {
     return this.customerRepository.find();
   }
@@ -68,17 +72,31 @@ export class CustomerService {
     if (!deleteResponse.affected) {
       return {
         succeed: false,
-        msg:`Customer ${id} wasn't successfully deleted.`
+        msg: `Customer ${id} wasn't successfully deleted.`,
       };
-    }else{
+    } else {
       return {
         succeed: true,
-        msg:`Customer id:${id} was successfully deleted.`
-      }; 
+        msg: `Customer id:${id} was successfully deleted.`,
+      };
     }
   }
 
   async count(id: number): Promise<number> {
     return this.customerRepository.count({ where: { id } });
+  }
+
+  async updateRefreshToken(
+    id: number,
+    refreshToken: string,
+  ): Promise<Customer> {
+    try {
+      const customer = await this.findOne(id);
+      customer.refreshToken = refreshToken;
+      await this.customerRepository.update(id, customer);
+      return this.findOne(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

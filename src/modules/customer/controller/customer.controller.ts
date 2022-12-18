@@ -4,7 +4,7 @@ import {
   PaginatedResultDto,
   PaginationDto,
 } from 'src/modules/helper/pagination.dto';
-import { CreateDto, UpdateDto} from '../dto/customer.dto';
+import { CreateDto, UpdateDto } from '../dto/customer.dto';
 import { Customer } from '../entities/customer.entities';
 import { CustomerService } from '../service/customer.service';
 
@@ -36,14 +36,4 @@ export class CustomerController {
   remove(@Param('id') id: string): Promise<object> {
     return this.customerService.remove(Number(id));
   }
-
-  //   @Get()
-  //   findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedResultDto> {
-  //     paginationDto.page = Number(paginationDto.page);
-  //     paginationDto.limit = Number(paginationDto.limit);
-  //     // return this.actorService.findAll({
-  //     //   ...paginationDto,
-  //     //   limit: paginationDto.limit > 20 ? 20 : paginationDto.limit,
-  //     // });
-  //   }
 }

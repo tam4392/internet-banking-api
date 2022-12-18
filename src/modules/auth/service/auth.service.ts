@@ -1,5 +1,5 @@
-import { CustomerService } from 'src/modules/customer/service/customer.service';
-import { AuthDto } from '../dto/auth.dto';
+import { CustomerService } from '../../customer/service/customer.service';
+import { AuthDto, EmployeeAuthDto } from '../dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { EmployeeService } from '../../employee/service/employee.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
     private customerService: CustomerService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private employeeService: EmployeeService,
   ) {}
 
   async getTokens(id: number, username: string): Promise<any> {
@@ -92,6 +94,54 @@ export class AuthService {
     }
     const tokens = await this.getTokens(customer.id, customer.userName);
     await this.updateRefreshToken(customer.id, tokens.refreshToken);
+    return tokens;
+  }
+
+  async employeeUpdateRefreshToken(
+    employeeId: number,
+    refreshToken: string,
+  ): Promise<void> {
+    const salt = await bcrypt.genSalt();
+    const hashRefreshToken = await bcrypt.hash(refreshToken, salt);
+    await this.employeeService.updateRefreshToken(employeeId, hashRefreshToken);
+  }
+
+  async employeeSignIn(authDto: EmployeeAuthDto): Promise<any> {
+    const { email, password } = authDto;
+    const employee = await this.employeeService.findByEmail(email);
+    const isCompare: boolean = await bcrypt.compare(
+      password,
+      employee.password,
+    );
+    if (employee && isCompare) {
+      const tokens = await this.getTokens(employee.id, employee.email);
+      await this.updateRefreshToken(employee.id, tokens.refreshToken);
+      return tokens;
+    } else {
+      throw new UnauthorizedException('auth_credential_is_wrong');
+    }
+  }
+
+  async employeeLogout(employeeId: number) {
+    return this.employeeService.updateRefreshToken(employeeId, '');
+  }
+
+  async employeeRefreshTokens(employeeId: number, refreshToken: string) {
+    const employee = await this.employeeService.findOne(employeeId);
+    if (!employee || !employee.refreshToken) {
+      throw new ForbiddenException('Access Denied');
+    }
+
+    const refreshTokenMatches: boolean = await bcrypt.compare(
+      refreshToken,
+      employee.refreshToken,
+    );
+
+    if (!refreshTokenMatches) {
+      throw new ForbiddenException('Access Denied');
+    }
+    const tokens = await this.getTokens(employee.id, employee.email);
+    await this.updateRefreshToken(employee.id, tokens.refreshToken);
     return tokens;
   }
 }

@@ -15,6 +15,10 @@ export class EmployeeService {
     return this.employeeRepository.findOne({ where: { id } });
   }
 
+  async findByEmail(email: string): Promise<Employees> {
+    return this.employeeRepository.findOne({ where: { email } });
+  }
+
   async findAll(): Promise<Employees[]> {
     return this.employeeRepository.find();
   }
@@ -43,7 +47,7 @@ export class EmployeeService {
     employee.password = updateDto.password;
     employee.phone = updateDto.phone;
     employee.type = updateDto.type;
-    
+
     try {
       await this.employeeRepository.update(id, employee);
       return this.findOne(id);
@@ -54,5 +58,19 @@ export class EmployeeService {
 
   async remove(id: number): Promise<void> {
     await this.employeeRepository.delete(id);
+  }
+
+  async updateRefreshToken(
+    id: number,
+    refreshToken: string,
+  ): Promise<Employees> {
+    try {
+      const employees = await this.findOne(id);
+      employees.refreshToken = refreshToken;
+      await this.employeeRepository.update(id, employees);
+      return this.findOne(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

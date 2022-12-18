@@ -16,7 +16,13 @@ export class Bank {
   id: number;
 
   @Column()
+  abbreviations: string;
+
+  @Column()
   name: string;
+
+  @Column()
+  moneyorder: string;
 
   @Column({ nullable: true })
   createdAt: Date;

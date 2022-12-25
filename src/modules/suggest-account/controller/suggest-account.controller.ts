@@ -4,11 +4,11 @@ import {
   PaginatedResultDto,
   PaginationDto,
 } from 'src/modules/helper/pagination.dto';
-import { CreateDto } from '../dto/suggest-account.dto';
+import { CreateDto, UpdateDto } from '../dto/suggest-account.dto';
 import { SuggestAccount } from '../entities/suggest-account.entities';
 import { SuggestAccountService } from '../service/suggest-account.service';
 
-@Controller('api/suggest-account')
+@Controller('api/suggestAccount')
 export class SuggestAccountController {
   constructor(private readonly suggestAccountService: SuggestAccountService) {}
 
@@ -17,20 +17,25 @@ export class SuggestAccountController {
   //  return this.suggestAccountService.findOne(Number(id));
   //}
 
-  //@Get()
-  //list(): Promise<SuggestAccount[]> {
-  //  return this.suggestAccountService.findAll();
-  //}
+  @Get(':id')
+  list(@Param('id') id: string): Promise<SuggestAccount[]> {
+    return this.suggestAccountService.findAll(Number(id));
+  }
 
   @Post()
   create(@Body() createDto: CreateDto): Promise<SuggestAccount> {
     return this.suggestAccountService.create(createDto);
   }
 
-  //@Delete()
-  //remove(@Param('id') id: string): Promise<void> {
-  //  return this.suggestAccountService.remove(Number(id));
-  //}
+  @Patch()
+  update(@Body() updateDto: UpdateDto): Promise<SuggestAccount> {
+    return this.suggestAccountService.update(updateDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string): Promise<void> {
+    return this.suggestAccountService.remove(Number(id));
+  }
 
   //   @Get()
   //   findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedResultDto> {

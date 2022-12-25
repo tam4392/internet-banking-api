@@ -1,5 +1,16 @@
 import { Transform, Type } from 'class-transformer';
-import { IsDate, IsDateString, IsEmail, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString ,Min, MinLength} from 'class-validator';
+import {
+  IsDate,
+  IsDateString,
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreateDto {
   @IsNotEmpty()
@@ -32,9 +43,8 @@ export class CreateDto {
   @MinLength(10)
   phone: string;
 
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
+  @IsNotEmpty()
+  @IsDateString()
   dob: Date;
 
   @IsOptional()
@@ -47,7 +57,6 @@ export class CreateDto {
 }
 
 export class UpdateDto {
-
   @IsNotEmpty()
   @IsInt()
   id: number;

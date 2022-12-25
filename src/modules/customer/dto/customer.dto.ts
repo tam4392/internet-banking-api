@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString ,Min, MinLength} from 'class-validator';
+import { IsDate, IsDateString, IsEmail, IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString ,Min, MinLength} from 'class-validator';
 
 export class CreateDto {
   @IsNotEmpty()
@@ -28,11 +28,11 @@ export class CreateDto {
 
   @IsNotEmpty()
   @IsNumberString()
-  @MinLength(11)
+  @MinLength(10)
   phone: string;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   dob: Date;
 
   @IsNotEmpty()

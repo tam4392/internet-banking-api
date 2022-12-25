@@ -1,10 +1,6 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateDto { 
-    @IsNotEmpty()
-    @IsInt()
-    id: number;
-
     @IsNotEmpty()
     @IsInt()
     sendAccountNum: number;
@@ -13,11 +9,21 @@ export class CreateDto {
     @IsInt()
     receiveAccountNum: number;
 
-    @IsOptional()
+    @IsNotEmpty()
     @IsString()
     name: string;
 
-    @IsOptional()
+    @IsNotEmpty()
     @IsInt()
     bankId: number;
 }
+
+export class UpdateDto {
+    @IsNotEmpty()
+    @IsNumber()
+    sendAccountNum: number;
+  
+    @IsOptional()
+    @IsString()
+    name: string;
+  }

@@ -1,4 +1,4 @@
-import {  IsNotEmpty, IsString, IsNumber, IsEmpty } from 'class-validator';
+import {  IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateDto {
   @IsNotEmpty()
@@ -19,7 +19,11 @@ export class UpdateDto {
   @IsNumber()
   id: number;
   
+  @IsOptional()
+  @IsString()
   abbreviations: string;
 
+  @IsOptional()
+  @IsString()
   name: string;
 }

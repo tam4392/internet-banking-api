@@ -36,7 +36,7 @@ export class Debit {
   createdBy: string;
 
   @Column()
-  type: string;
+  type: number;
 
   @Column({ nullable: true })
   createdAt: Date;
@@ -63,7 +63,7 @@ export class Debit {
   }
 
   @BeforeUpdate()
-  beforeUpdate() {
+  async checkBeforeUpdate() {
     this.updatedAt = new Date();
   }
 }

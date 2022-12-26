@@ -23,7 +23,7 @@ export class TransactionService {
 
   async findOne(id: number): Promise<Transaction> {
     const query = this.transactionRepository.createQueryBuilder('transaction');
-    query.where('customerAddress.id = :id', { id });
+    query.where('transaction.id = :id', { id });
     const item = await query
       .innerJoinAndSelect(
         'transaction.sendAccountNum',

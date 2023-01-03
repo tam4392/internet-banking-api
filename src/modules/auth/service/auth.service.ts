@@ -19,12 +19,19 @@ export class AuthService {
     private employeeService: EmployeeService,
   ) {}
 
-  async getTokens(id: number, username: string): Promise<any> {
+  async getTokens(
+    id: number,
+    username: string,
+    type: any,
+    name: string,
+  ): Promise<any> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           id: id,
           username,
+          type,
+          name,
         },
         {
           secret: this.configService.get('JWT_SECRET'),
@@ -35,6 +42,8 @@ export class AuthService {
         {
           id: id,
           username,
+          type,
+          name,
         },
         {
           secret: this.configService.get('JWT_REFRESH_SECRET'),
@@ -66,7 +75,12 @@ export class AuthService {
       customer.password,
     );
     if (customer && isCompare) {
-      const tokens = await this.getTokens(customer.id, customer.userName);
+      const tokens = await this.getTokens(
+        customer.id,
+        customer.userName,
+        '',
+        customer.name,
+      );
       await this.updateRefreshToken(customer.id, tokens.refreshToken);
       return tokens;
     } else {
@@ -92,7 +106,12 @@ export class AuthService {
     if (!refreshTokenMatches) {
       throw new ForbiddenException('Access Denied');
     }
-    const tokens = await this.getTokens(customer.id, customer.userName);
+    const tokens = await this.getTokens(
+      customer.id,
+      customer.userName,
+      '',
+      customer.name,
+    );
     await this.updateRefreshToken(customer.id, tokens.refreshToken);
     return tokens;
   }
@@ -114,8 +133,13 @@ export class AuthService {
       employee.password,
     );
     if (employee && isCompare) {
-      const tokens = await this.getTokens(employee.id, employee.email);
-      await this.updateRefreshToken(employee.id, tokens.refreshToken);
+      const tokens = await this.getTokens(
+        employee.id,
+        employee.email,
+        employee.type,
+        employee.name,
+      );
+      await this.employeeUpdateRefreshToken(employee.id, tokens.refreshToken);
       return tokens;
     } else {
       throw new UnauthorizedException('auth_credential_is_wrong');
@@ -140,8 +164,13 @@ export class AuthService {
     if (!refreshTokenMatches) {
       throw new ForbiddenException('Access Denied');
     }
-    const tokens = await this.getTokens(employee.id, employee.email);
-    await this.updateRefreshToken(employee.id, tokens.refreshToken);
+    const tokens = await this.getTokens(
+      employee.id,
+      employee.email,
+      employee.type,
+      employee.name,
+    );
+    await this.employeeUpdateRefreshToken(employee.id, tokens.refreshToken);
     return tokens;
   }
 }

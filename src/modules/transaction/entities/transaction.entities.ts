@@ -78,7 +78,7 @@ export class Transaction {
   }
 
   @BeforeUpdate()
-  beforeUpdate() {
+  checkBeforeUpdate() {
     this.updatedAt = new Date();
   }
 }

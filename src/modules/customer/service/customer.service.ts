@@ -20,7 +20,7 @@ export class CustomerService {
   }
 
   async findAll(): Promise<Customer[]> {
-    return this.customerRepository.find();
+    return await this.customerRepository.find();
   }
 
   async create(createDto: CreateDto): Promise<Customer> {

@@ -62,27 +62,22 @@ export class TransactionService {
 
     const totalCount = await query.getCount();
     const lstData = await query
-      .innerJoinAndSelect(
-        'transaction.sendAccountNum',
-        'customer',
-        'customer.id = transaction.sendAccountNum',
-      )
-      .innerJoinAndSelect(
-        'transaction.receiveAccountNum',
-        'customer',
-        'customer.id = transaction.receiveAccountNum',
-      )
-      .innerJoinAndSelect(
-        'transaction.sendBankId',
-        'bank',
-        'bank.id = transaction.sendBankId',
-      )
-      .innerJoinAndSelect(
-        'transaction.receiveBankId',
-        'bank',
-        'bank.id = transaction.receiveBankId',
-      )
-      .orderBy('transaction.id', 'DESC')
+      .select([
+        'transaction',
+        'sendInfo.id',
+        'sendInfo.accountNum',
+        'sendInfo.name',
+        'receiveInfo.accountNum',
+        'receiveInfo.id',
+        'receiveInfo.name',
+        'bankSend.name',
+        'bankReceive.name',
+      ])
+      .leftJoin('transaction.sendAccNum', 'sendInfo')
+      .leftJoin('transaction.receiveAccNum', 'receiveInfo')
+      .leftJoin('transaction.sendBank', 'bankSend')
+      .leftJoin('transaction.receiveBank', 'bankReceive')
+      .orderBy('transaction.createdAt', 'DESC')
       .offset(skippedItems)
       .limit(paginationDto.limit)
       .getMany();
@@ -136,7 +131,7 @@ export class TransactionService {
 
   async create(createDto: TransactionCreateDto): Promise<Transaction> {
     const errorResult = await this.validate(createDto);
-    if (!errorResult.isError) {
+    if (errorResult.isError) {
       throw new BadRequestException(errorResult);
     }
 

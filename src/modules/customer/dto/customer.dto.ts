@@ -94,6 +94,7 @@ export class UpdateDto {
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
+  @IsOptional()
   dob: Date;
 
   @IsOptional()

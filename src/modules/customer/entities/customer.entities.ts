@@ -92,9 +92,14 @@ export class Customer {
     const salt = await bcrypt.genSalt();
     const hashPass = await bcrypt.hash(this.password, salt);
     this.password = hashPass;
-    let str = '';
-    for(str = ''; str.length < 10;) str += "0123456789"[(Math.random() * 60) | 0]
-    this.accountNum = str;
+
+    const characters ='0123456789';
+    let result = ' ';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < 13; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    this.accountNum = result;
   }
 
   @BeforeUpdate()

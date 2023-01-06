@@ -13,7 +13,7 @@ import {
 } from 'class-validator';
 
 export class CreateDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   accountNum: string;
 

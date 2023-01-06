@@ -17,7 +17,20 @@ export class SuggestAccountService {
   }
 
   async findAll(sendAccountNum: number): Promise<SuggestAccount[]> {
-    return this.suggestAccountRepository.find({ where: { sendAccountNum } });
+    const query =
+      this.suggestAccountRepository.createQueryBuilder('suggestAccount');
+    const lstData = await query
+      .select([
+        'suggestAccount',
+        'receiveAccount.id',
+        'receiveAccount.accountNum',
+        'receiveAccount.name',
+      ])
+      .innerJoin('suggestAccount.receiveSgtAcc', 'receiveAccount')
+      .where({ sendAccountNum })
+      .getMany();
+
+    return lstData;
   }
 
   async create(createDto: CreateDto): Promise<SuggestAccount> {
@@ -37,9 +50,12 @@ export class SuggestAccountService {
 
   async update(updateDto: UpdateDto): Promise<SuggestAccount> {
     const sendAccountNum = updateDto.sendAccountNum;
-    
+
     try {
-      await this.suggestAccountRepository.update({ sendAccountNum }, { name: updateDto.name });
+      await this.suggestAccountRepository.update(
+        { sendAccountNum },
+        { name: updateDto.name },
+      );
       return this.findOne(sendAccountNum);
     } catch (error) {
       console.log(error);

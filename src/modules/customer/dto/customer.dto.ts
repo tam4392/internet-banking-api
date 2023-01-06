@@ -40,7 +40,6 @@ export class CreateDto {
 
   @IsOptional()
   @IsNumberString()
-  @MinLength(10)
   phone: string;
 
   @IsNotEmpty()
@@ -89,7 +88,6 @@ export class UpdateDto {
 
   @IsOptional()
   @IsNumberString()
-  @MinLength(11)
   phone: string;
 
   @IsNotEmpty()

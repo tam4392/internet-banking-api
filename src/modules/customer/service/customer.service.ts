@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from '../entities/customer.entities';
 import { Repository } from 'typeorm';
 import { CreateDto, UpdateDto } from '../dto/customer.dto';
+import crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class CustomerService {
@@ -25,17 +27,27 @@ export class CustomerService {
 
   async create(createDto: CreateDto): Promise<Customer> {
     const customer = new Customer();
-    customer.accountNum = createDto.accountNum;
+    customer.accountNum = this.generateRandomString(10);
     customer.accountBalance = createDto.accountBalance;
     customer.name = createDto.name;
     customer.email = createDto.email;
     customer.userName = createDto.userName;
-    customer.password = createDto.password;
+    // customer.password = createDto.password;
     customer.phone = createDto.phone;
     customer.dob = createDto.dob;
     customer.address = createDto.address;
     customer.bankId = createDto.bankId;
     delete customer.id;
+
+    const saltRounds = 10;
+    const plainPassword = createDto.password;
+    bcrypt.hash(plainPassword, saltRounds, function (err, hash) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      customer.password = hash;
+    });
 
     try {
       const result = await this.customerRepository.save(customer);
@@ -53,11 +65,23 @@ export class CustomerService {
     customer.name = updateDto.name;
     customer.email = updateDto.email;
     customer.userName = updateDto.userName;
-    customer.password = updateDto.password;
+    // customer.password = updateDto.password;
     customer.phone = updateDto.phone;
     customer.dob = updateDto.dob;
     customer.address = updateDto.address;
     customer.bankId = updateDto.bankId;
+
+    if (updateDto.password != '') {
+      const saltRounds = 10;
+      const plainPassword = updateDto.password;
+      bcrypt.hash(plainPassword, saltRounds, function (err, hash) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        customer.password = hash;
+      });
+    }
 
     try {
       const result = await this.customerRepository.update(id, customer);
@@ -98,6 +122,13 @@ export class CustomerService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  generateRandomString(length) {
+    return crypto
+      .randomBytes(Math.ceil(length / 2))
+      .toString('hex')
+      .slice(0, length);
   }
 
   async updateAccountBalance(id: number, amount: number): Promise<Customer> {

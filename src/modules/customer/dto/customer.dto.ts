@@ -45,6 +45,7 @@ export class CreateDto {
 
   @IsNotEmpty()
   @IsDateString()
+  @IsOptional()
   dob: Date;
 
   @IsOptional()

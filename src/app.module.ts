@@ -10,6 +10,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
 import { DebitModule } from './modules/debit/debit.module';
 import { MailModule } from './modules/mail/mail.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CodeVerifyModule } from './modules/code-verify/code-verify.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { AuthModule } from './modules/auth/auth.module';
     TransactionModule,
     DebitModule,
     MailModule,
-    AuthModule
+    AuthModule,
+    CodeVerifyModule,
   ],
   controllers: [],
   providers: [],

@@ -25,26 +25,21 @@ export class TransactionService {
     const query = this.transactionRepository.createQueryBuilder('transaction');
     query.where('transaction.id = :id', { id });
     const item = await query
-      .innerJoinAndSelect(
-        'transaction.sendAccountNum',
-        'customer',
-        'customer.id = transaction.sendAccountNum',
-      )
-      .innerJoinAndSelect(
-        'transaction.receiveAccountNum',
-        'customer',
-        'customer.id = transaction.receiveAccountNum',
-      )
-      .innerJoinAndSelect(
-        'transaction.sendBankId',
-        'bank',
-        'bank.id = transaction.sendBankId',
-      )
-      .innerJoinAndSelect(
-        'transaction.receiveBankId',
-        'bank',
-        'bank.id = transaction.receiveBankId',
-      )
+      .select([
+        'transaction',
+        'sendInfo.id',
+        'sendInfo.accountNum',
+        'sendInfo.name',
+        'receiveInfo.accountNum',
+        'receiveInfo.id',
+        'receiveInfo.name',
+        'bankSend.name',
+        'bankReceive.name',
+      ])
+      .leftJoin('transaction.sendAccNum', 'sendInfo')
+      .leftJoin('transaction.receiveAccNum', 'receiveInfo')
+      .leftJoin('transaction.sendBank', 'bankSend')
+      .leftJoin('transaction.receiveBank', 'bankReceive')
       .getOne();
 
     return item;

@@ -14,6 +14,7 @@ import { Transaction } from '../../transaction/entities/transaction.entities';
 import { SuggestAccount } from '../../suggest-account/entities/suggest-account.entities';
 import { Debit } from '../../debit/entities/debit.entities';
 import * as bcrypt from 'bcrypt';
+import { CodeVerify } from '../../code-verify/entities/code-verify.entities';
 
 @Entity()
 export class Customer {
@@ -80,6 +81,9 @@ export class Customer {
 
   @OneToMany(() => Debit, (debit) => debit.targetAccount)
   receiveDebitAcc: Debit[];
+
+  @OneToMany(() => CodeVerify, (codeVerify) => codeVerify.customerId)
+  codeVerify: CodeVerify[];
 
   @BeforeInsert()
   async checkBeforeCreate() {

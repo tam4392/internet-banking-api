@@ -82,6 +82,9 @@ export class Customer {
   @OneToMany(() => Debit, (debit) => debit.targetAccount)
   receiveDebitAcc: Debit[];
 
+  @OneToMany(() => Debit, (debit) => debit.cusCreatedBy)
+  debitCreateBy: Debit[];
+
   @OneToMany(() => CodeVerify, (codeVerify) => codeVerify.customerId)
   codeVerify: CodeVerify[];
 

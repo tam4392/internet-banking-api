@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Customer } from '../../customer/entities/customer.entities';
+import { DEBIT_STATUS_NOT_PAID } from '../dto/debit.dto';
 
 @Entity()
 export class Debit {
@@ -30,10 +31,10 @@ export class Debit {
   dateRemind: Date;
 
   @Column()
-  status: string;
+  status: number;
 
   @Column()
-  createdBy: string;
+  createdBy: number;
 
   @Column()
   type: number;
@@ -56,10 +57,17 @@ export class Debit {
   @JoinColumn({ name: 'targetAccountId' })
   targetAccount: Customer;
 
+  @ManyToOne(() => Customer, (customer) => customer.debitCreateBy, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'createdBy' })
+  cusCreatedBy: Customer;
+
   @BeforeInsert()
   async checkBeforeCreate() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    this.status = DEBIT_STATUS_NOT_PAID;
   }
 
   @BeforeUpdate()

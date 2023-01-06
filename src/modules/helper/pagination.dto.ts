@@ -1,6 +1,7 @@
 export class PaginationDto {
   page: number;
   limit: number;
+  createdBy?: any;
 }
 
 export class PaginatedResultDto {

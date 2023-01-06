@@ -7,6 +7,8 @@ import {
   Min,
 } from 'class-validator';
 
+export const DEBIT_STATUS_NOT_PAID = 1;
+export const DEBIT_STATUS_PAID = 3;
 export const DEBIT_TYPE_COLLECT = 1; //thu nợ
 export const DEBIT_TYPE_REMINDER = 3; //nhắc  đòi nợ
 
@@ -35,6 +37,10 @@ export class DebitCreateDto {
   @IsNumber()
   @IsNotEmpty()
   type: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  createdBy: number;
 }
 
 export class DebitUpdateDto {

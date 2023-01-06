@@ -10,6 +10,7 @@ import { PaginatedResultDto, PaginationDto } from '../../helper/pagination.dto';
 import { ErrorResultDto } from '../../helper/error-result.dto';
 import { DebitCreateDto, DebitUpdateDto } from '../dto/debit.dto';
 import { CustomerService } from '../../customer/service/customer.service';
+import { isEmpty, set } from 'lodash';
 
 @Injectable()
 export class DebitService {
@@ -47,19 +48,27 @@ export class DebitService {
     }
     const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
     const query = this.debitRepository.createQueryBuilder('debit');
+    const objFilter = {};
+    if (paginationDto?.createdBy) {
+      set(objFilter, 'createdBy', Number(paginationDto.createdBy));
+    }
 
+    if (!isEmpty(objFilter)) {
+      query.where(objFilter);
+    }
     const totalCount = await query.getCount();
     const lstData = await query
-      .innerJoinAndSelect(
-        'debit.sourceAccountId',
-        'customer',
-        'customer.id = debit.sourceAccountId',
-      )
-      .innerJoinAndSelect(
-        'debit.targetAccountId',
-        'customer',
-        'customer.id = debit.targetAccountId',
-      )
+      .select([
+        'debit',
+        'sourceInfo.name',
+        'sourceInfo.id',
+        'sourceInfo.accountNum',
+        'targetInfo.name',
+        'targetInfo.id',
+        'targetInfo.accountNum',
+      ])
+      .leftJoin('debit.sourceAccount', 'sourceInfo')
+      .leftJoin('debit.targetAccount', 'targetInfo')
       .orderBy('debit.id', 'DESC')
       .offset(skippedItems)
       .limit(paginationDto.limit)
@@ -104,7 +113,7 @@ export class DebitService {
 
   async create(createDto: DebitCreateDto): Promise<Debit> {
     const errorResult = await this.validate(createDto);
-    if (!errorResult.isError) {
+    if (errorResult.isError) {
       throw new BadRequestException(errorResult);
     }
 
@@ -115,12 +124,12 @@ export class DebitService {
     debit.content = createDto.content;
     debit.dateRemind = new Date(createDto.dateRemind);
     debit.type = createDto.type;
+    debit.createdBy = createDto.createdBy;
 
     try {
       const result = await this.debitRepository.save(debit);
       return result;
     } catch (error) {
-      console.log({ error });
       throw new InternalServerErrorException();
     }
   }

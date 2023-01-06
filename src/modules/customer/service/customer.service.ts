@@ -10,7 +10,7 @@ export class CustomerService {
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
-  ) { }
+  ) {}
 
   async findOne(id: number): Promise<Customer> {
     return this.customerRepository.findOne({ where: { id } });
@@ -25,11 +25,8 @@ export class CustomerService {
   }
 
   async create(createDto: CreateDto): Promise<Customer> {
-    let str = '';
-    for(str = ''; str.length < 10;) str += "0123456789"[(Math.random() * 60) | 0]
-
     const customer = new Customer();
-    customer.accountNum = str;
+    customer.accountNum = createDto.accountNum;
     customer.accountBalance = createDto.accountBalance;
     customer.name = createDto.name;
     customer.email = createDto.email;
@@ -40,17 +37,6 @@ export class CustomerService {
     customer.address = createDto.address;
     customer.bankId = createDto.bankId;
     delete customer.id;
-
-    // const saltRounds = 10;
-    // const plainPassword = createDto.password;
-    // bcrypt.hash(plainPassword, saltRounds, function (err, hash) {
-    //   if (err) {
-    //     console.error(err);
-    //     return;
-    //   }
-    //   customer.password = hash;
-    // });
-
 
     try {
       const result = await this.customerRepository.save(customer);
@@ -73,18 +59,6 @@ export class CustomerService {
     customer.dob = updateDto.dob;
     customer.address = updateDto.address;
     customer.bankId = updateDto.bankId;
-
-    // if (updateDto.password) {
-    //   const saltRounds = 10;
-    //   const plainPassword = updateDto.password;
-    //   bcrypt.hash(plainPassword, saltRounds, function (err, hash) {
-    //     if (err) {
-    //       console.error(err);
-    //       return;
-    //     }
-    //     customer.password = hash;
-    //   });
-    // }
 
     try {
       const result = await this.customerRepository.update(id, customer);
@@ -121,6 +95,17 @@ export class CustomerService {
       const customer = await this.findOne(id);
       customer.refreshToken = refreshToken;
       await this.customerRepository.update(id, customer);
+      return this.findOne(id);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async updateAccountBalance(id: number, amount: number): Promise<Customer> {
+    const customerItem = await this.findOne(id);
+    customerItem.accountBalance += amount;
+    try {
+      const result = await this.customerRepository.update(id, customerItem);
       return this.findOne(id);
     } catch (error) {
       console.log(error);

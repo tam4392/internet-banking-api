@@ -92,10 +92,16 @@ export class Customer {
     const salt = await bcrypt.genSalt();
     const hashPass = await bcrypt.hash(this.password, salt);
     this.password = hashPass;
+    let str = '';
+    for(str = ''; str.length < 10;) str += "0123456789"[(Math.random() * 60) | 0]
+    this.accountNum = str;
   }
 
   @BeforeUpdate()
-  checkBeforeUpdate() {
+  async checkBeforeUpdate() {
     this.updatedAt = new Date();
+    const salt = await bcrypt.genSalt();
+    const hashPass = await bcrypt.hash(this.password, salt);
+    this.password = hashPass;
   }
 }

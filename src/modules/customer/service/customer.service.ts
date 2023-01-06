@@ -99,4 +99,15 @@ export class CustomerService {
       console.log(error);
     }
   }
+
+  async updateAccountBalance(id: number, amount: number): Promise<Customer> {
+    const customerItem = await this.findOne(id);
+    customerItem.accountBalance += amount;
+    try {
+      const result = await this.customerRepository.update(id, customerItem);
+      return this.findOne(id);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

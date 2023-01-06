@@ -36,4 +36,15 @@ export class CustomerController {
   remove(@Param('id') id: string): Promise<object> {
     return this.customerService.remove(Number(id));
   }
+
+  @Patch(':id')
+  updateAccountBalance(
+    @Param('id') id: string,
+    @Body() updateDto: any,
+  ): Promise<Customer> {
+    return this.customerService.updateAccountBalance(
+      Number(id),
+      updateDto?.amount,
+    );
+  }
 }

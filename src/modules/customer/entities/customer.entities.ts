@@ -108,8 +108,8 @@ export class Customer {
   @BeforeUpdate()
   async checkBeforeUpdate() {
     this.updatedAt = new Date();
-    const salt = await bcrypt.genSalt();
-    const hashPass = await bcrypt.hash(this.password, salt);
-    this.password = hashPass;
+    // const salt = await bcrypt.genSalt();
+    // const hashPass = await bcrypt.hash(this.password, salt);
+    // this.password = hashPass;
   }
 }

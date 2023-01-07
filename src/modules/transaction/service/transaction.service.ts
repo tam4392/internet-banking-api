@@ -7,10 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from '../entities/transaction.entities';
 import { PaginatedResultDto, PaginationDto } from '../../helper/pagination.dto';
-import { TransactionCreateDto } from '../dto/transaction.dto';
+import {
+  TransactionCreateDto,
+  TRANSACTION_TYPE_RECEIVE,
+  TRANSACTION_TYPE_SEND,
+} from '../dto/transaction.dto';
 import { ErrorResultDto } from '../../helper/error-result.dto';
 import { BankService } from '../../bank/service/bank.service';
 import { CustomerService } from '../../customer/service/customer.service';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class TransactionService {
@@ -54,6 +59,21 @@ export class TransactionService {
     }
     const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
     const query = this.transactionRepository.createQueryBuilder('transaction');
+    const arrFilter = [];
+    if (paginationDto?.id) {
+      arrFilter.push({
+        sendAccountNum: Number(paginationDto.id),
+        type: TRANSACTION_TYPE_SEND,
+      });
+      arrFilter.push({
+        receiveAccountNum: Number(paginationDto.id),
+        type: TRANSACTION_TYPE_RECEIVE,
+      });
+    }
+
+    if (!isEmpty(arrFilter)) {
+      query.where(arrFilter);
+    }
 
     const totalCount = await query.getCount();
     const lstData = await query

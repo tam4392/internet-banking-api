@@ -48,13 +48,14 @@ export class DebitService {
     }
     const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
     const query = this.debitRepository.createQueryBuilder('debit');
-    const objFilter = {};
-    if (paginationDto?.createdBy) {
-      set(objFilter, 'createdBy', Number(paginationDto.createdBy));
+    const arrFilter = [];
+    if (paginationDto?.id) {
+      arrFilter.push({ createdBy: Number(paginationDto.id) });
+      arrFilter.push({ targetAccountId: Number(paginationDto.id) });
     }
 
-    if (!isEmpty(objFilter)) {
-      query.where(objFilter);
+    if (!isEmpty(arrFilter)) {
+      query.where(arrFilter);
     }
     const totalCount = await query.getCount();
     const lstData = await query

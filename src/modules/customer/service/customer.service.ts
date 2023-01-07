@@ -20,6 +20,19 @@ export class CustomerService {
     return this.customerRepository.findOne({ where: { userName } });
   }
 
+  async findByAccountNum(accountNum: any): Promise<Customer> {
+    const query = this.customerRepository.createQueryBuilder('customer');
+    query.select([
+      'customer.id',
+      'customer.accountNum',
+      'customer.name',
+      'customer.bankId',
+    ]);
+    const item = await query.where({ accountNum: accountNum.search }).getOne();
+
+    return item;
+  }
+
   async findAll(): Promise<Customer[]> {
     return await this.customerRepository.find();
   }

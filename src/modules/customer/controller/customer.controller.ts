@@ -12,6 +12,11 @@ import { CustomerService } from '../service/customer.service';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @Get('/search-by-account')
+  findByAccountNum(@Query() search: any): Promise<Customer> {
+    return this.customerService.findByAccountNum(search);
+  }
+
   @Get(':id')
   detail(@Param('id') id: string): Promise<Customer> {
     return this.customerService.findOne(Number(id));
